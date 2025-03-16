@@ -35,9 +35,9 @@
                     </button>
                 {% endif %}
 
-                {# Search bar #}
+                {# Search bar with ID #}
                 <div class="header-search flex-1">
-                    <salla-search inline oval height="36"></salla-search>
+                    <salla-search inline oval height="36" id="mainSearch"></salla-search>
                 </div>
             </div>
 
@@ -62,16 +62,15 @@
                                 <h2 class="sr-only">{{ store.name }}</h2>
                             {% endif %}
                         </a>
-                        111 
                         <custom-main-menu></custom-main-menu>
                     </div>
 
-                    {# Filter Button and Inputs #}
+                    {# Filter Inputs and Button #}
                     <div class="flex items-center justify-center bg-red-500">
-                        <input type="text" id="filterInputName" placeholder="اسم المنتج" class="border rounded px-2 py-1 mx-1">
-                        <input type="number" id="filterInputPrice" placeholder="السعر الأدنى" class="border rounded px-2 py-1 mx-1">
-                        <input type="text" id="filterInputType" placeholder="نوع المنتج" class="border rounded px-2 py-1 mx-1">
-                        <button id="filterButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-1">تصفية</button>
+                        <input type="text" id="filterInput1" placeholder="Category" class="border rounded px-2 py-1 mx-1">
+                        <input type="text" id="filterInput2" placeholder="Brand" class="border rounded px-2 py-1 mx-1">
+                        <input type="text" id="filterInput3" placeholder="Price Range" class="border rounded px-2 py-1 mx-1">
+                        <button id="filterButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-1">Filter</button>
                     </div>
 
                     <div class="flex items-center justify-end">
@@ -97,27 +96,17 @@
 
 <script>
     document.getElementById('filterButton').addEventListener('click', function() {
-        // Get filter values from inputs
-        const productName = document.getElementById('filterInputName').value.trim();
-        const minPrice = parseFloat(document.getElementById('filterInputPrice').value.trim());
-        const productType = document.getElementById('filterInputType').value.trim();
+        const searchTerm = document.getElementById('mainSearch').value;
+        const category = document.getElementById('filterInput1').value;
+        const brand = document.getElementById('filterInput2').value;
+        const priceRange = document.getElementById('filterInput3').value;
 
-        // Prepare the filter payload
-        const filters = {};
-
-        if (productName) {
-            filters.name = productName; // Filter by product name
-        }
-        if (!isNaN(minPrice)) {
-            filters.price_min = minPrice; // Filter by minimum price
-        }
-        if (productType) {
-            filters.type = productType; // Filter by product type
-        }
-
-        console.log('Applied Filters:', filters);
-
-        // Dispatch the filtering event to Salla's system
-        salla.event.dispatch('products::filter', filters);
+        // Dispatch Salla's filter event with combined parameters
+        salla.event.dispatch('products::filter', {
+            q: searchTerm,          // Search term
+            category: category,    // Category filter
+            brand: brand,          // Brand filter
+            price_range: priceRange // Price range filter
+        });
     });
 </script>
